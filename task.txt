@@ -1,0 +1,13 @@
+
+
+
+
+Routes 
+
+POST /url 
+gernates new url shornter, - unique
+
+GET /:id - redirect the user to original URl
+
+GET url/analytics/:id
+to track and return how many times user clicked the link
