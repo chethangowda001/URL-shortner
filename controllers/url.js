@@ -21,22 +21,44 @@ return res.status(201).json({ msg: "Success", id: shortid })
 } ;
 }
 
-async function handleRedirectURl(req, res){
-    const shortId = req.params.shortid;
-    const entry = await URL.findOneAndUpdate({
-        shortId
-    },{$push: {
-        visitHistory: Date.now(),
-    },
-});
-return res.status(200).json({ redirectlink: allDbUrl})
+async function handleRedirectURL(req, res) {
+    const shortId = req.params.shortId;
 
+    try {
+        const result = await URL.findOneAndUpdate(
+            { shortId },
+            {
+                $push: {
+                    visitHistory: {
+                        timestamp: Date.now()
+                    }
+                }
+            },
+            { new: true, timestamps: true } // Ensures the updated document is returned
+        );
+
+        if (!result) {
+            return res.status(404).json({ error: "Short URL not found" });
+        }
+
+        return res.redirect(result.reDirectURL);
+    } catch (err) {
+        console.log("Error in redirect", err);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 }
 
+async function HnadleGetAnalytics(req, res){
+const shortId = req.params.shortId;
+const entry = await URL.findOne({shortId});
+
+return res.status(200).json({TotalClicks: entry.visitHistory.length, analytics: entry.visitHistory})
+}
 
 
 module.exports = {
     handleGernateNewShortURL,
-    handleRedirectURl,
+    handleRedirectURL,
+    HnadleGetAnalytics,
    
 }
