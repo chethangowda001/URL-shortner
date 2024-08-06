@@ -12,9 +12,13 @@ const result = await URL.create({
     shortId: shortid,
     reDirectURL: body.url,
     visitHistory: [],
+    createdBy: req.user._id,
 });
 console.log("Post result", result);
-return res.status(201).json({ msg: "Success", id: shortid })
+return res.status(201).render("home", {
+    id: shortid
+    
+})                                                       //json({ msg: "Success", id: shortid })
 }  catch(err) {
     console.log("error in post server error", err);
     return res.status(500).json({error: "faild to upload internal server error"})
